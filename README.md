@@ -1,30 +1,39 @@
 # Love Letter
 
-A small romantic website with an animated envelope, typewriter text, floating hearts and a soft sound toggle.
+Interactive romantic letter page.
 
-## How to edit
+## What it does
 
-Open `script.js` and change the `CONFIG.pages` array:
+The page starts with a closed envelope. Click the envelope, it opens, moves closer to the bottom of the screen, and a large letter appears with a typewriter text effect. The letter can be closed with the round `×` button or with `Esc`.
 
-```js
-pages: [
-  {
-    title: "Привет.",
-    text: "Твой текст письма..."
-  }
-]
+## Files
+
+```text
+index.html
+style.css
+script.js
+favicon.svg
+README.md
 ```
-
-You can add more pages by adding more objects to the array.
 
 ## Run locally
 
-```bash
+```powershell
 uv run python -m http.server 8000
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:8000
+```
+
+You can also open `index.html` directly in the browser, but the local server is better for testing before GitHub Pages.
+
+## Change the phrase
+
+Open `script.js` and edit this line:
+
+```js
+message: "You are my favorite place to come back to.",
 ```
