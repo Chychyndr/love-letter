@@ -1,4 +1,5 @@
-# Love Letter
+# <img src="./favicon.svg" alt="" width="32" height="32"> Love Letter
+
 ## What it does
 
 The page starts with a closed envelope. Click the envelope, it opens, moves closer to the bottom of the screen, and a large letter appears with a typewriter text effect. The letter can be closed with the round `×` button or with `Esc`.
