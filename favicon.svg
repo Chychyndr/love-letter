@@ -1,13 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Love Letter emblem">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Love Note emblem">
   <style>
-    @media (prefers-color-scheme: dark) {
-      .outline { stroke: #ffffff; }
-      .seal { fill: #ffffff; }
-    }
+    @media (prefers-color-scheme: dark) { .emblem { fill: #ffffff; } }
   </style>
-  <g class="outline" fill="none" stroke="#000000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="6" y="13" width="52" height="38" rx="5"/>
-    <path d="M8 16 23 29 M56 16 41 29"/>
-  </g>
-  <path class="seal" fill="#000000" d="M32 43C29 41 21 35 21 29C21 22 29 21 32 27C35 21 43 22 43 29C43 35 35 41 32 43Z"/>
+  <path class="emblem" fill="#000000" fill-rule="evenodd" d="M5 7H59V46H30L17 59V46H5ZM32 38C27 34 19 28 19 22C19 14 28 13 32 20C36 13 45 14 45 22C45 28 37 34 32 38Z"/>
 </svg>
