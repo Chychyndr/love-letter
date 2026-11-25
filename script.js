@@ -60,11 +60,19 @@ function render(progress) {
   const envelopeY = mix(pocketY, h * .92 + .17 * w, expanded);
   for (const layer of [envelopeWrap, front, flapLayer]) layer.style.top = `${envelopeY}px`;
   const hingeY = pocketY - 87 / 520 * w;
-  const paperY = hingeY + mix(.205, -.182, extracted) * w;
+  const paperY = hingeY + mix(.235, -.235, extracted) * w;
   const portrait = viewportWidth <= 600 && h > viewportWidth;
   letterDialog.style.top = `${mix(paperY, h * (portrait ? .46 : .45), expanded)}px`;
-  letterDialog.style.width = `${mix(w * .59, Math.min(720, viewportWidth * (portrait ? .90 : .88)), expanded)}px`;
-  letterDialog.style.height = `${mix(w * .34, Math.min(780, h * (portrait ? .72 : .78)), expanded)}px`;
+  // The folded note nearly fills the pocket; its reading size grows only modestly.
+  const paperWidth = mix(w * .76, Math.min(650, viewportWidth * .90, w * .98), expanded);
+  const paperHeight = mix(w * .42, Math.min(650, h * .74, w * .86), expanded);
+  letterDialog.style.width = `${paperWidth}px`;
+  letterDialog.style.height = `${paperHeight}px`;
+  letterDialog.style.setProperty('--paper-radius', `${mix(5, 10, expanded)}px`);
+  letterDialog.style.setProperty('--paper-inner-radius', `${mix(2, 5, expanded)}px`);
+  letterDialog.style.setProperty('--paper-inset', `${paperWidth * .03}px`);
+  letterDialog.style.setProperty('--paper-shadow-y', `${mix(2, 12, expanded)}px`);
+  letterDialog.style.setProperty('--paper-shadow-blur', `${mix(5, 30, expanded)}px`);
 }
 function play(target) {
   if (motion.matches) { render(target); return Promise.resolve(); }
