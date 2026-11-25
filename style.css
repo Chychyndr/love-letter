@@ -57,7 +57,10 @@ button { font: inherit; }
 .paper { position: relative; display: grid; width: 100%; height: 100%; place-items: center; overflow: hidden; border: 1px solid #71463738; border-radius: var(--paper-radius, 8px); background: linear-gradient(140deg, #ffffffe0, #ffffff38 32%, transparent 58%), linear-gradient(180deg, #fff6e8, #f8ead8 64%, #e8cdb0); box-shadow: inset 0 0 0 1px #ffffff60, inset 0 -28px 46px #794b2f14, 0 var(--paper-shadow-y, 3px) var(--paper-shadow-blur, 8px) #0003; }
 .paper-texture { position: absolute; inset: var(--paper-inset, 9px); border: 1px solid #6f433815; border-radius: var(--paper-inner-radius, 4px); pointer-events: none; background-image: linear-gradient(#5f363609 1px,transparent 1px),linear-gradient(90deg,#5f363607 1px,transparent 1px); background-size: 31px 31px; }
 .paper-shadow { display: none; }
-.close-letter { position: absolute; top: clamp(12px, 3vw, 24px); right: clamp(12px, 3vw, 24px); z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #6239332e; border-radius: 50%; background: #fff9ee; color: #40202d; font-size: 28px; line-height: 1; cursor: pointer; }
+.close-letter { position: absolute; top: var(--paper-inset, 9px); right: var(--paper-inset, 9px); z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: #40202d; cursor: pointer; }
+.close-letter svg { display: block; pointer-events: none; }
+.close-letter:hover { color: #8d172d; }
+.close-letter:focus-visible { outline: 2px solid #8d172d; outline-offset: -3px; }
 .typed-message { width: min(84%, 560px); margin: 0; text-align: center; font-size: clamp(1.7rem, min(6vw, 8dvh), 4.2rem); line-height: 1.15; letter-spacing: -.045em; text-wrap: balance; }
 .close-letter, .typed-message { opacity: 0; visibility: hidden; transition: opacity 180ms ease; }
 .is-reading .close-letter, .is-reading .typed-message { opacity: 1; visibility: visible; }
@@ -66,5 +69,5 @@ button { font: inherit; }
 @keyframes blink { 50% { opacity: 0; } }
 #typedText { white-space: pre-wrap; }
 @media (max-width: 600px) and (orientation: portrait) { .stage { --env-w: min(112vw, 88dvh); } .typed-message { font-size: clamp(1.8rem, 8vw, 3rem); } }
-@media (max-height: 500px) and (orientation: landscape) { .stage { --env-w: min(70vw, 82dvh); } .typed-message { font-size: clamp(1.4rem, 6dvh, 2.5rem); } .close-letter { width: 36px; height: 36px; font-size: 24px; } }
+@media (max-height: 500px) and (orientation: landscape) { .stage { --env-w: min(70vw, 82dvh); } .typed-message { font-size: clamp(1.4rem, 6dvh, 2.5rem); } .close-letter svg { width: 20px; height: 20px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .particles { display: none; } }
