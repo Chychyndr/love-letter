@@ -33,5 +33,5 @@ You can also open `index.html` directly in the browser, but the local server is 
 Open `script.js` and edit this line:
 
 ```js
-message: "You are my favorite place to come back to.",
+message: "You are my favorite place to come back to",
 ```

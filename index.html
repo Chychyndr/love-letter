@@ -7,6 +7,8 @@
       name="description"
       content="An interactive love letter with an opening envelope, a large paper note, and typewriter text."
     />
+    <meta name="darkreader-lock" />
+    <meta name="color-scheme" content="only dark" />
     <meta name="theme-color" content="#170912" />
     <title>Love Letter</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -92,8 +94,8 @@
               </g>
 
               <g class="env-closed-flap" clip-path="url(#envClip)">
-                <path d="M76 103 H444 Q472 103 472 130 V143 L300 257 Q260 283 220 257 L48 143 V130 Q48 103 76 103 Z" />
-                <path class="closed-flap-edge" d="M92 139 L220 257 Q260 283 300 257 L428 139" />
+                <path d="M76 103 H444 Q465 103 467 124 Q468 133 459 140 L282 254 Q260 269 238 254 L61 140 Q52 133 53 124 Q55 103 76 103 Z" />
+                <path class="closed-flap-edge" d="M62 139 L238 254 Q260 269 282 254 L458 139" />
               </g>
 
               <g class="wax-seal-svg">
@@ -110,7 +112,7 @@
           <div class="paper-shadow" aria-hidden="true"></div>
           <div class="paper">
             <div class="paper-texture" aria-hidden="true"></div>
-            <button class="close-letter" id="closeLetter" type="button" aria-label="Close the letter">×</button>
+            <button class="close-letter" id="closeLetter" type="button" aria-label="Close the letter"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6L18 18M18 6L6 18" /></svg></button>
             <p class="typed-message" aria-label="Letter text">
               <span id="typedText"></span><span class="cursor" id="cursor" aria-hidden="true"></span>
             </p>
