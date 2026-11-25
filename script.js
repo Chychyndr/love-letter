@@ -14,13 +14,75 @@ front.setAttribute('viewBox', '0 0 520 380');
 front.setAttribute('class', 'envelope-front-layer');
 front.setAttribute('aria-hidden', 'true');
 front.setAttribute('focusable', 'false');
-for (const selector of ['.env-front', '.env-closed-flap', '.wax-seal-svg']) front.append(art.querySelector(selector));
+const flapLayer = front.cloneNode(false);
+flapLayer.setAttribute('class', 'envelope-flap-layer');
+const flap = art.querySelector('.env-closed-flap');
+flap.removeAttribute('clip-path');
+flapLayer.append(flap);
+const seal = art.querySelector('.wax-seal-svg');
+flapLayer.append(seal);
+front.append(art.querySelector('.env-front'));
+art.querySelector('.env-open-flap')?.remove();
 art.querySelector('.preview-letter')?.remove();
-stage.append(front);
+stage.append(front, flapLayer);
+const envelopeWrap = document.querySelector('#envelopeWrap');
 letterDialog.inert = true;
 let state = 'closed';
 let typingTimer;
-const wait = ms => new Promise(resolve => setTimeout(resolve, motion.matches ? 0 : ms));
+const TIMING = { total: 2050, seal: [0, 220], flap: [100, 760], extract: [550, 1420], expand: [1190, 2050] };
+let position = 0;
+const clamp = v => Math.min(1, Math.max(0, v));
+const mix = (a, b, t) => a + (b - a) * t;
+const ease = t => t * t * (3 - 2 * t);
+const phase = (ms, [start, end]) => ease(clamp((ms - start) / (end - start)));
+
+// All moving elements share one reversible timeline. The flap is a single
+// piece of paper rotating around its fixed horizontal fold at SVG y=103.
+function render(progress) {
+  position = progress;
+  const ms = progress * TIMING.total;
+  const released = phase(ms, TIMING.seal);
+  const angle = Math.PI * phase(ms, TIMING.flap);
+  const projection = Math.cos(angle);
+  const extracted = phase(ms, TIMING.extract);
+  const expanded = phase(ms, TIMING.expand);
+  flap.setAttribute('transform', `translate(0 103) scale(1 ${projection}) translate(0 -103)`);
+  flapLayer.classList.toggle('is-back', projection < 0);
+  flapLayer.style.zIndex = projection < 0 ? '1' : '5';
+  flap.style.filter = `brightness(${0.82 + 0.18 * Math.abs(projection)})`;
+  seal.style.opacity = 1 - released;
+  seal.style.visibility = released === 1 ? 'hidden' : 'visible';
+  seal.setAttribute('transform', `translate(260 224) scale(${1 - .08 * released}) translate(-260 -224)`);
+  const w = envelopeWrap.offsetWidth;
+  const h = stage.clientHeight;
+  const viewportWidth = stage.clientWidth;
+  const pocketY = h / 2 - .076 * w + .10 * w * extracted;
+  const envelopeY = mix(pocketY, h * .92 + .17 * w, expanded);
+  for (const layer of [envelopeWrap, front, flapLayer]) layer.style.top = `${envelopeY}px`;
+  const hingeY = pocketY - 87 / 520 * w;
+  const paperY = hingeY + mix(.205, -.182, extracted) * w;
+  const portrait = viewportWidth <= 600 && h > viewportWidth;
+  letterDialog.style.top = `${mix(paperY, h * (portrait ? .46 : .45), expanded)}px`;
+  letterDialog.style.width = `${mix(w * .59, Math.min(720, viewportWidth * (portrait ? .90 : .88)), expanded)}px`;
+  letterDialog.style.height = `${mix(w * .34, Math.min(780, h * (portrait ? .72 : .78)), expanded)}px`;
+}
+function play(target) {
+  if (motion.matches) { render(target); return Promise.resolve(); }
+  const from = position;
+  const duration = Math.abs(target - from) * TIMING.total * (target === 0 ? .82 : 1);
+  return new Promise(resolve => {
+    let start;
+    function tick(now) {
+      start ??= now;
+      const t = clamp((now - start) / duration);
+      render(mix(from, target, t));
+      if (t < 1) requestAnimationFrame(tick); else resolve();
+    }
+    requestAnimationFrame(tick);
+  });
+}
+window.addEventListener('resize', () => render(position));
+render(0);
 function createParticles() {
   const symbols = ['♥', '♡', '✦', '✧', '•'];
   const fragment = document.createDocumentFragment();
@@ -28,8 +90,8 @@ function createParticles() {
     const item = document.createElement('span');
     item.className = 'particle';
     item.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    const values = { x: (Math.random()*100)+'%', size: (9+Math.random()*22)+'px', duration: (13+Math.random()*18)+'s', delay: (-Math.random()*26)+'s', drift: (-95+Math.random()*190)+'px', r: (-35+Math.random()*70)+'deg', alpha: .2+Math.random()*.46 };
-    for (const [key, value] of Object.entries(values)) item.style.setProperty('--'+key, value);
+    const values = { x: `${Math.random()*100}%`, size: `${9+Math.random()*22}px`, duration: `${13+Math.random()*18}s`, delay: `${-Math.random()*26}s`, drift: `${-95+Math.random()*190}px`, r: `${-35+Math.random()*70}deg`, alpha: .2+Math.random()*.46 };
+    for (const [key, value] of Object.entries(values)) item.style.setProperty(`--${key}`, value);
     fragment.append(item);
   }
   particles.append(fragment);
@@ -51,21 +113,15 @@ function typeMessage() {
 async function openEnvelope() {
   if (state !== 'closed') return;
   state = 'opening'; envelopeButton.disabled = true;
-  app.classList.add('is-unsealed'); await wait(180);
-  app.classList.add('is-open'); await wait(520);
-  app.classList.add('is-lifted'); await wait(900);
-  app.classList.add('is-expanded'); await wait(900);
+  await play(1);
   app.classList.add('is-reading'); letterDialog.inert = false; state = 'reading';
   typeMessage(); closeLetter.focus({preventScroll:true});
 }
 async function closeFullLetter() {
   if (state !== 'reading') return;
   state = 'closing'; stopTyping(); letterDialog.inert = true;
-  app.classList.remove('is-reading'); await wait(180); typedText.textContent = '';
-  app.classList.remove('is-expanded'); await wait(900);
-  app.classList.remove('is-lifted'); await wait(900);
-  app.classList.remove('is-open'); await wait(520);
-  app.classList.remove('is-unsealed'); await wait(180);
+  app.classList.remove('is-reading'); typedText.textContent = '';
+  await play(0);
   state = 'closed'; envelopeButton.disabled = false; envelopeButton.focus({preventScroll:true});
 }
 envelopeButton.addEventListener('click', openEnvelope);
